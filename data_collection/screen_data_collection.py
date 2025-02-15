@@ -7,7 +7,7 @@ import cv2
 
 ## Functions ##
 
-def get_image_data():
+def get_screen_data():
     # Screenshotting Entire Screen
     # Returns a screenshot of the full screen
     screenshot = ImageGrab.grab(bbox = None)
@@ -53,10 +53,10 @@ def classify_screenshot_no_processing(screenshot):
 
 ## Main ##
 
-# Suppress Warnings
+# Suppress warnings in output
 logging.set_verbosity_error()
 
 # Run functions
-screenshot, allWindows, activeWindow = get_image_data()
+screenshot, allWindows, activeWindow = get_screen_data()
 procress_screenshot(screenshot)
 classify_screenshot_no_processing(screenshot)
