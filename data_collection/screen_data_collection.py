@@ -1,5 +1,5 @@
 # Packages
-from PIL import Image, ImageGrab
+from PIL import ImageGrab
 import pygetwindow as gw
 
 # Screenshotting Entire Screen
