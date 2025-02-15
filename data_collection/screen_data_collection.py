@@ -45,7 +45,7 @@ def procress_screenshot(screenshot):
     cv2.destroyAllWindows()
 
 # Classify a screenshot (without processing)
-def classify_screenshot(screenshot):
+def classify_screenshot_no_processing(screenshot):
     # Classify fullScreenshot with text (Google)
     image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", use_fast=True)
     classification = image_classifier(screenshot)
@@ -59,4 +59,4 @@ logging.set_verbosity_error()
 # Run functions
 screenshot, allWindows, activeWindow = get_image_data()
 procress_screenshot(screenshot)
-classify_screenshot(screenshot)
+classify_screenshot_no_processing(screenshot)
