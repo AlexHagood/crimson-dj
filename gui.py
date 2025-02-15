@@ -44,10 +44,9 @@ class App(QMainWindow):
         self.setGeometry(100, 100, self.img_width, self.img_height)
 
         # Marquee
-        self.marquee_label = MarqueeLabel("Now playing: running in the 90s", central_widget)
+        self.marquee_label = MarqueeLabel("Now playing: running in the 90s", central_widget, width=int(self.img_width * .8))
         self.marquee_label.setFont(QFont('Arial', 30))
         self.marquee_label.move(50, int(self.img_height*.7))
-        self.marquee_label.width = self.img_width // 2
         self.marquee_label.show()
 
     def quitApp(self):
@@ -57,7 +56,7 @@ class App(QMainWindow):
     def pauseButton(self):
         self.pauseState = not self.pauseState
         self.pb.setText({True: "\u23F5", False: "\u23F8"}[self.pauseState])
-        self.marquee_label.scrollText()
+        self.marquee_label.setMarqueeText("Now Playing:")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
