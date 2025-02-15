@@ -1,45 +1,55 @@
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
+from marquee import MarqueeLabel
 import sys
 
-class FloatingImage(QLabel):
+class App(QMainWindow):
 
-    pauseState = False;
+    pauseState = False
 
     def __init__(self, image_path):
         super().__init__()
 
-        # Load the image
-        pixmap = QPixmap(image_path)
-        self.setPixmap(pixmap)
-        img_width = pixmap.width()
-        img_height = pixmap.height()
 
-        #button
-        exitButton = QPushButton("Quit", self)
+
+        # Central widget
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+
+        # Load the image
+        self.image_label = QLabel(central_widget)
+        pixmap = QPixmap(image_path)
+        self.image_label.setPixmap(pixmap)
+        self.img_width = pixmap.width()
+        self.img_height = pixmap.height()
+        # Buttons
+        exitButton = QPushButton("Quit", central_widget)
         exitButton.setFixedSize(50, 60)
-        pauseButton = QPushButton("\u23F5", self)
+        pauseButton = QPushButton("\u23F5", central_widget)
         self.pb = pauseButton
-        exitButton.setFixedSize(50, 60)
         pauseButton.setFixedSize(50, 60)
 
         exitButton.clicked.connect(self.quitApp)
         pauseButton.clicked.connect(self.pauseButton)
 
-        exitButton.move(int(img_width * .4)  , int(img_height * .567) )
-        pauseButton.move(int(img_width * .4 + 50)  , int(img_height * .567) )
+        exitButton.setFont(QFont('Arial', 15))
 
-        exitButton.setFont(QFont('Times', 15))
-        pauseButton.setFont(QFont('Times', 15))
+        exitButton.move(int(self.img_width * .4)  , int(self.img_height * .567) )
+        pauseButton.move(int(self.img_width * .4 + 50)  , int(self.img_height * .567) )
 
-        # Remove window frame and make it topmost
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        
+        self.setGeometry(100, 100, self.img_width, self.img_height)
 
-        # Set the image size
-        self.resize(pixmap.size())
-        self.show()
+        # Marquee
+        self.marquee_label = MarqueeLabel("Now playing: running in the 90s", central_widget)
+        self.marquee_label.setFont(QFont('Arial', 30))
+        self.marquee_label.move(50, int(self.img_height*.7))
+        self.marquee_label.width = self.img_width // 2
+        self.marquee_label.show()
+
     def quitApp(self):
         self.close()
         exit()
@@ -47,9 +57,11 @@ class FloatingImage(QLabel):
     def pauseButton(self):
         self.pauseState = not self.pauseState
         self.pb.setText({True: "\u23F5", False: "\u23F8"}[self.pauseState])
+        self.marquee_label.scrollText()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     image_path = "img/dj.png"  # Change to your image file path
-    floating_image = FloatingImage(image_path)
+    window = App(image_path)
+    window.show()
     sys.exit(app.exec())
