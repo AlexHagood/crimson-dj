@@ -1,6 +1,7 @@
 # Packages
 from PIL import ImageGrab
 import pygetwindow as gw
+from transformers import pipeline
 
 # Screenshotting Entire Screen
 # Returns a screenshot of the full screen
@@ -13,3 +14,7 @@ allWindows = gw.getAllWindows()
 # Identify active window
 # Returns the active window's metadata
 activeWindow = gw.getActiveWindow()
+
+# Classify fullScreenshot with text
+image_classifier = pipeline("image-classification")
+classification = image_classifier(fullScreenshot)
