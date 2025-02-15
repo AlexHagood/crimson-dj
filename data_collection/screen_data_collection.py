@@ -1,7 +1,10 @@
 # Packages
 from PIL import ImageGrab
 import pygetwindow as gw
-from transformers import pipeline
+from transformers import pipeline, logging
+
+# Suppress Warnings
+logging.set_verbosity_error()
 
 # Screenshotting Entire Screen
 # Returns a screenshot of the full screen
@@ -16,5 +19,6 @@ allWindows = gw.getAllWindows()
 activeWindow = gw.getActiveWindow()
 
 # Classify fullScreenshot with text
-image_classifier = pipeline("image-classification")
+image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", use_fast=True)
 classification = image_classifier(fullScreenshot)
+print(classification)
