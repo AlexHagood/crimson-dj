@@ -22,6 +22,14 @@ def get_screen_data():
 
     return screenshot, allWindows, activeWindow
 
+# Classify a screenshot
+def classify_screenshot(screenshot):
+    # Classify fullScreenshot with text (Google)
+    image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", use_fast=True)
+    classification = image_classifier(screenshot)
+    print("Image Classification: ", classification)
+
+# This function is useless now
 # Process a screenshot to its edges
 def procress_screenshot(screenshot):
 
@@ -37,13 +45,6 @@ def procress_screenshot(screenshot):
     # Apply edge detection
     edges = cv2.Canny(screenshotGrayScale, 100, 200)
 
-# Classify a screenshot (without processing)
-def classify_screenshot_no_processing(screenshot):
-    # Classify fullScreenshot with text (Google)
-    image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", use_fast=True)
-    classification = image_classifier(screenshot)
-    print("Image Classification: ", classification)
-
 ## Main ##
 
 # Suppress warnings in output
@@ -51,5 +52,4 @@ logging.set_verbosity_error()
 
 # Run functions
 screenshot, allWindows, activeWindow = get_screen_data()
-# procress_screenshot(screenshot)
-classify_screenshot_no_processing(screenshot)
+classify_screenshot(screenshot)
