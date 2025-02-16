@@ -2,11 +2,12 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from marquee import MarqueeLabel
+from goodspotify import player
 import sys
 
 class App(QMainWindow):
 
-    pauseState = False
+    pauseState = True
     hiddenState = 1
     
 
@@ -44,14 +45,14 @@ class App(QMainWindow):
         exitButton.move(int(self.img_width * .4)  , int(self.img_height * .567) )
 
         #Pause/play button
-        self.pb = pauseButton
-        pauseButton.setFixedSize(50, 60)
         pauseButton = QPushButton("\u23F5", central_widget)
+        pauseButton.setFixedSize(50, 60)
         pauseButton.clicked.connect(self.pauseButton)
         pauseButton.move(int(self.img_width * .4 + 50)  , int(self.img_height * .567) )
+        self.pb = pauseButton
         
         # Window Init
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool | Qt.WindowType.TransparentForMouseEvents)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.Tool)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         screen = QGuiApplication.primaryScreen()
         screen_geometry = screen.geometry()
@@ -75,6 +76,8 @@ class App(QMainWindow):
         self.speech.setPixmap(scaled_pixmap)
         self.speech.move(int(self.img_width * .1), 0)
         self.speech.show()
+        
+        self.opacity_effect = QGraphicsOpacityEffect()
         self.speech.setGraphicsEffect(self.opacity_effect)
         self.opacity_effect.setOpacity(0)
 
@@ -83,7 +86,9 @@ class App(QMainWindow):
         self.speechText.setStyleSheet("color: black;")
         self.speechText.setGeometry(int(scaled_pixmap.width() * .028), int(scaled_pixmap.height() * .1), int(scaled_pixmap.width() * .94), int(scaled_pixmap.height() * .5))
         self.speechText.setFont(QFont('Courier', 20))
-        self.opacity_effect = QGraphicsOpacityEffect()
+
+
+        self.player = player()
        
     def on_press(self):
         self.steps = 0
@@ -130,10 +135,25 @@ class App(QMainWindow):
         exit()
 
     def pauseButton(self):
-        self.pauseState = not self.pauseState
-        self.pb.setText({True: "\u23F5", False: "\u23F8"}[self.pauseState])
-        self.marquee_label.setMarqueeText("Now Playing: Straight Gas")
-        self.speak("Whatsup dog!")
+        try:
+            if self.pauseState:
+                self.player.play()
+                self.pb.setText("\u23F8")
+                self.pauseState = False
+                self.marquee_label.setMarqueeText(f"Now Playing: {self.player.getSongName()}")
+                self.speak("Banger alert")
+            else:
+                self.player.pause()
+                self.pb.setText("\u23F5")
+                self.pauseState = True
+                self.marquee_label.setMarqueeText(f"more bangers coming soon")
+                self.speak("Hey!")
+        except:
+            self.speak("Bruh")
+            self.pauseState = not self.pauseState
+
+        
+        
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
