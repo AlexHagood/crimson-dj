@@ -76,11 +76,57 @@ class App(QMainWindow):
         self.marquee_label.move(50, int(self.img_height*.7))
         self.marquee_label.show()
 
+        # Load the speech bubble image and scale it down to 0.20
+        speech_bubble_path = "img/speech.png"
+        speech_bubble_pixmap = QPixmap(speech_bubble_path)
+        scaled_pixmap = speech_bubble_pixmap.scaled(speech_bubble_pixmap.width() // 3, speech_bubble_pixmap.height() // 5, Qt.AspectRatioMode.IgnoreAspectRatio , Qt.TransformationMode.SmoothTransformation)
+        self.speech = QLabel(central_widget)
+        self.speech.setPixmap(scaled_pixmap)
+        self.speech.move(int(self.img_width * .1), 0)
+        self.speech.hide()
+
+        self.speechText = QLabel("Wassup dog", self.speech)
+        self.speechText.setStyleSheet("color: black;")
+        self.speechText.setGeometry(int(scaled_pixmap.width() * .028), int(scaled_pixmap.height() * .1), int(scaled_pixmap.width() * .94), int(scaled_pixmap.height() * .5))
+        self.speechText.setFont(QFont('Courier', 20))
+
+
+
+        self.opacity_effect = QGraphicsOpacityEffect(self.speech)
+        self.speech.setGraphicsEffect(self.opacity_effect)
+
     def on_press(self):
         self.steps = 0
         self.dtimer.timeout.connect(self.on_timeout)
         self.inc = self.img_height // 35
         self.dtimer.start(50)
+
+    def apply_fade_in(self, widget):
+            """Applies a fade-in effect to the given widget."""
+            opacity_effect = QGraphicsOpacityEffect()
+            widget.setGraphicsEffect(opacity_effect)
+
+            animation = QPropertyAnimation(opacity_effect, b"opacity")
+            animation.setDuration(1000)  # 1 second
+            animation.setStartValue(0)   # Fully transparent
+            animation.setEndValue(1)     # Fully opaque
+            animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Smooth effect
+            animation.start()
+
+            # Keep a reference to prevent garbage collection
+            self.animation = animation  
+
+
+    def speak(self, text):
+        self.speechText.setText(text)
+        self.apply_fade_in(self.speech)
+        self.speechTimer = QTimer(self)
+        self.speechTimer.timeout.connect(self.hideSpeech)
+        self.speechTimer.start(5000)
+
+    def hideSpeech(self):
+        self.fadeout(self.speech)
+        self.speechTimer.stop()
 
 
 
@@ -110,9 +156,9 @@ class App(QMainWindow):
         self.pauseState = not self.pauseState
         self.pb.setText({True: "\u23F5", False: "\u23F8"}[self.pauseState])
         self.marquee_label.setMarqueeText("Now Playing:")
+        self.speak("Whatsup dog!")
 
 if __name__ == "__main__":
-
     app = QApplication(sys.argv)
     image_path = "img/dj.png"  # Change to your image file path
     window = App(image_path)
