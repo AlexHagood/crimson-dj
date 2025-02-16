@@ -58,5 +58,5 @@ logging.set_verbosity_error()
 
 # Run functions
 screenshot, allWindows, activeWindow = get_screen_data()
-procress_screenshot(screenshot)
+# procress_screenshot(screenshot)
 classify_screenshot_no_processing(screenshot)
