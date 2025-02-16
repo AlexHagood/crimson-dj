@@ -54,16 +54,31 @@ def getPromptForImageClassification():
 
     return "You are a audio mixer. You love to hear about items around the world that might be seen on a computer screen. You then return a list in the format [\"theme\"], where \"theme\" is a list of no more than 5 spotify themes. What you see is: "
 
+def cleanThemes(themesString):
+
+    splitString = themesString.replace("\"", "").split("[")
+    print("Length of Split String: " + str(len(splitString)))
+    if len(splitString) > 2:
+
+        print("Something Terrible Has Occured, Pray and Return")
+        return splitString[-1].replace("]", "")
+    
+    elif len(splitString) == 2:
+
+        return splitString[-1].replace("]", "")
+
+    else:
+
+        #Did not follow the format so we are just praying that it fits
+        return splitString[0]
+
 def dataMain(apiKey):
-    # return llm.llmCaller(api_key=apiKey).getResponse(prompt=getPromptForImageClassification() + classification)['choices'][0]['message']['content']
-    # return classification
-    # Suppress warnings in output
+
     logging.set_verbosity_error()
-    # Run functions
     screenshot, allWindows, activeWindow = get_screen_data()
     classification = classify_screenshot(screenshot)
 
-    if "web" in classification or "screen" in classification:
+    if "web" in classification or "screen" in classification or "monitor" in classification or "notebook" in classification:
 
         activeWindow.title
         print("Type:" + activeWindow.title)
@@ -71,15 +86,7 @@ def dataMain(apiKey):
     
     else:
 
+        print("PreCLassifcation Classification: " + classification)
         themes = llm.llmCaller(api_key=apiKey).getResponse(prompt=getPromptForImageClassification() + classification)['choices'][0]['message']['content']
-        print(classification)
 
-    return themes
-
-
-## Main ##
-
-apiKey = "yourApiKey"
-
-
-print(dataMain(apiKey))
+    return cleanThemes(themes)
