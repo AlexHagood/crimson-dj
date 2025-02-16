@@ -45,6 +45,8 @@ def procress_screenshot(screenshot):
     # Apply edge detection
     edges = cv2.Canny(screenshotGrayScale, 100, 200)
 
+    return edges
+
 ## Main ##
 
 # Suppress warnings in output
