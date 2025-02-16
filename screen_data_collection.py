@@ -54,4 +54,4 @@ logging.set_verbosity_error()
 
 # Run functions
 screenshot, allWindows, activeWindow = get_screen_data()
-classify_screenshot(screenshot)
+classification = classify_screenshot(screenshot)
