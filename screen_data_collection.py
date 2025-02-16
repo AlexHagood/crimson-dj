@@ -37,13 +37,6 @@ def procress_screenshot(screenshot):
     # Apply edge detection
     edges = cv2.Canny(screenshotGrayScale, 100, 200)
 
-    # Display edge detection result
-    cv2.imshow("Edge Detection", edges)
-
-    # Wait for a key press and close windows
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
 # Classify a screenshot (without processing)
 def classify_screenshot_no_processing(screenshot):
     # Classify fullScreenshot with text (Google)
