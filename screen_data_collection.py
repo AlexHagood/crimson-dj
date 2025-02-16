@@ -25,7 +25,7 @@ def get_screen_data():
 # Classify a screenshot
 def classify_screenshot(screenshot):
     # Classify fullScreenshot with text (Google)
-    image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", use_fast=True)
+    image_classifier = pipeline("image-classification", model="google/vit-base-patch16-224", processor="google/vit-base-patch16-224", use_fast=True)
     classification = image_classifier(screenshot)
     print("Image Classification: ", classification)
 
