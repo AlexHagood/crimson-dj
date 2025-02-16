@@ -83,7 +83,7 @@ class App(QMainWindow):
         self.speech = QLabel(central_widget)
         self.speech.setPixmap(scaled_pixmap)
         self.speech.move(int(self.img_width * .1), 0)
-        self.speech.hide()
+        self.speech.show()
 
         self.speechText = QLabel("Wassup dog", self.speech)
         self.speechText.setStyleSheet("color: black;")
@@ -92,8 +92,9 @@ class App(QMainWindow):
 
 
 
-        self.opacity_effect = QGraphicsOpacityEffect(self.speech)
+        self.opacity_effect = QGraphicsOpacityEffect()
         self.speech.setGraphicsEffect(self.opacity_effect)
+        self.opacity_effect.setOpacity(0)
 
     def on_press(self):
         self.steps = 0
@@ -101,32 +102,28 @@ class App(QMainWindow):
         self.inc = self.img_height // 35
         self.dtimer.start(50)
 
-    def apply_fade_in(self, widget):
-            """Applies a fade-in effect to the given widget."""
-            opacity_effect = QGraphicsOpacityEffect()
-            widget.setGraphicsEffect(opacity_effect)
-
-            animation = QPropertyAnimation(opacity_effect, b"opacity")
-            animation.setDuration(1000)  # 1 second
-            animation.setStartValue(0)   # Fully transparent
-            animation.setEndValue(1)     # Fully opaque
-            animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Smooth effect
-            animation.start()
-
-            # Keep a reference to prevent garbage collection
-            self.animation = animation  
-
 
     def speak(self, text):
         self.speechText.setText(text)
-        self.apply_fade_in(self.speech)
+        self.animation = QPropertyAnimation(self.opacity_effect, b"opacity")
+        self.animation.setDuration(1000)  # 1 second
+        self.animation.setStartValue(0)   # Fully transparent
+        self.animation.setEndValue(1)     # Fully opaque
+        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Smooth effect
+        self.animation.start()
         self.speechTimer = QTimer(self)
         self.speechTimer.timeout.connect(self.hideSpeech)
-        self.speechTimer.start(5000)
+        self.speechTimer.start(3000)
 
     def hideSpeech(self):
-        self.fadeout(self.speech)
         self.speechTimer.stop()
+        self.animation = QPropertyAnimation(self.opacity_effect, b"opacity")
+        self.animation.setDuration(1000)  # 1 second
+        self.animation.setStartValue(1)   # Fully transparent
+        self.animation.setEndValue(0)     # Fully opaque
+        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuad)  # Smooth effect
+        self.animation.start()
+        
 
 
 
